@@ -40,17 +40,24 @@ func createLogMessage(message string, timestamp int64) *events.LogMessage {
 }
 
 var _ = Describe("Processor", func() {
+	var processor *ExceptionProcessor
+
+	BeforeEach(func() {
+		processor = NewExceptionProcessor()
+	})
 
 	Describe("benign messages", func() {
-		var processor *ExceptionProcessor
-
-		BeforeEach(func() {
-			processor = NewExceptionProcessor()
-		})
 
 		It("Don't process messages without exceptions ", func() {
 			metric := processor.Process(createMessage("this is an okay message", 0))
 			Expect(metric).To(BeNil())
+		})
+	})
+
+	Describe("exception messages", func() {
+		It("should process messages with 'exception' ", func() {
+			metric := processor.Process(createMessage("this is an exception message", 0))
+			Expect(metric).ToNot(BeNil())
 		})
 	})
 })
