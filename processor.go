@@ -1,6 +1,8 @@
 package exceptionprocessor
 
 import (
+	"regexp"
+
 	"github.com/cloudcredo/graphite-nozzle/metrics"
 	"github.com/cloudfoundry/noaa/events"
 )
@@ -14,7 +16,18 @@ func NewExceptionProcessor() *ExceptionProcessor {
 	return &ExceptionProcessor{}
 }
 
-//Process does the work of processing the metric.
-func (processor *ExceptionProcessor) Process(e *events.Envelope) []metrics.Metric {
-	return nil
+var reg = regexp.MustCompile("(?i)exception")
+
+//Process does the work of processing the metric. Returns nil if message has
+//no exception
+func (processor *ExceptionProcessor) Process(e *events.Envelope) *metrics.CounterMetric {
+	hasException := reg.Match(e.GetLogMessage().GetMessage())
+	if !hasException {
+		return nil
+	}
+
+	stat := e.GetLogMessage().GetAppId() + "-exceptions"
+	metric := metrics.NewCounterMetric(stat, 1)
+
+	return metric
 }
