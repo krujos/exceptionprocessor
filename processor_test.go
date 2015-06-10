@@ -59,5 +59,10 @@ var _ = Describe("Processor", func() {
 			metric := processor.Process(createMessage("this is an exception message", 0))
 			Expect(metric).ToNot(BeNil())
 		})
+
+		It("should process messages with in `block in", func() {
+			metric := processor.Process(createMessage("/Users/jkruck/git/demo-apps/ruby/app.rb:16:in `block in <top (required)>'", 0))
+			Expect(metric).ToNot(BeNil())
+		})
 	})
 })

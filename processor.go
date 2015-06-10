@@ -16,12 +16,15 @@ func NewExceptionProcessor() *ExceptionProcessor {
 	return &ExceptionProcessor{}
 }
 
-var reg = regexp.MustCompile("(?i)exception")
+var javaException = regexp.MustCompile("(?i)exception")
+var rubyException = regexp.MustCompile("in `block in ")
 
 //Process does the work of processing the metric. Returns nil if message has
 //no exception
 func (processor *ExceptionProcessor) Process(e *events.Envelope) *metrics.CounterMetric {
-	hasException := reg.Match(e.GetLogMessage().GetMessage())
+
+	hasException := javaException.Match(e.GetLogMessage().GetMessage()) ||
+		rubyException.Match(e.GetLogMessage().GetMessage())
 	if !hasException {
 		return nil
 	}
