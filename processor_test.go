@@ -1,11 +1,10 @@
-package exceptionprocessor_test
+package exceptionprocessor
 
 import (
 	"time"
 
 	"github.com/cloudfoundry/noaa/events"
 	"github.com/gogo/protobuf/proto"
-	. "github.com/krujos/exceptionprocessor"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -49,20 +48,20 @@ var _ = Describe("Processor", func() {
 	Describe("benign messages", func() {
 
 		It("Don't process messages without exceptions ", func() {
-			metric := processor.Process(createMessage("this is an okay message", 0))
-			Expect(metric).To(BeNil())
+			metric := processor.processLogMessage(createLogMessage("this is an okay message", 0))
+			Expect(metric.Value).To(Equal(int64(0)))
 		})
 	})
 
 	Describe("exception messages", func() {
 		It("should process messages with 'exception' ", func() {
-			metric := processor.Process(createMessage("this is an exception message", 0))
-			Expect(metric).ToNot(BeNil())
+			metric := processor.processLogMessage(createLogMessage("this is an exception message", 0))
+			Expect(metric.Value).To(Equal(int64(1)))
 		})
 
 		It("should process messages with in `block in", func() {
-			metric := processor.Process(createMessage("/Users/jkruck/git/demo-apps/ruby/app.rb:16:in `block in <top (required)>'", 0))
-			Expect(metric).ToNot(BeNil())
+			metric := processor.processLogMessage(createLogMessage("/Users/jkruck/git/demo-apps/ruby/app.rb:16:in `block in <top (required)>'", 0))
+			Expect(metric.Value).To(Equal(int64(1)))
 		})
 	})
 })

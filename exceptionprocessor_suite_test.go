@@ -1,4 +1,4 @@
-package exceptionprocessor_test
+package exceptionprocessor
 
 import (
 	. "github.com/onsi/ginkgo"
