@@ -23,7 +23,6 @@ var rubyException = regexp.MustCompile("in `block in ")
 //no exception
 func (processor *ExceptionProcessor) Process(e *events.Envelope) []metrics.Metric {
 	processedMetrics := make([]metrics.Metric, 1)
-
 	processedMetrics[0] = processor.processLogMessage(e.GetLogMessage())
 	return processedMetrics
 }

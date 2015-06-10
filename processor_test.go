@@ -63,5 +63,10 @@ var _ = Describe("Processor", func() {
 			metric := processor.processLogMessage(createLogMessage("/Users/jkruck/git/demo-apps/ruby/app.rb:16:in `block in <top (required)>'", 0))
 			Expect(metric.Value).To(Equal(int64(1)))
 		})
+
+		It("Should give us back one metric", func() {
+			metrics := processor.Process(createMessage("This is a message", 0))
+			Expect(metrics).To(HaveLen(1))
+		})
 	})
 })
